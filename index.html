@@ -1,0 +1,200 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Naveen! ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&f[]=playfair-display@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0c0a09; --primary-color: #ff3879; --secondary-color: #ff74a4;
+            --accent-glow: rgba(255, 100, 150, 0.6); --card-bg: rgba(20, 10, 20, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1); --text-light: #fce7f3;
+        }
+
+        body { font-family: 'Satoshi', sans-serif; background-color: var(--bg-color); color: var(--text-light); overflow: hidden; }
+        
+        #aurora-background {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background: radial-gradient(at 15% 15%, hsla(333,70%,55%,.4) 0px, transparent 60%),
+                        radial-gradient(at 85% 20%, hsla(282, 82%, 54%, .3) 0px, transparent 60%),
+                        radial-gradient(at 20% 85%, hsla(210, 89%, 60%, .3) 0px, transparent 60%);
+            animation: aurora-flow 20s infinite alternate;
+        }
+
+        .step {
+            position: absolute; top: 50%; left: 50%; width: 90%; max-width: 600px;
+            background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid var(--card-border);
+            opacity: 0; transform: translate(-50%, -50%) scale(0.9); transition: all 0.7s ease;
+            pointer-events: none; border-radius: 2rem; padding: 2.5rem; text-align: center; z-index: 10;
+        }
+
+        .step.active { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: all; }
+        .btn { background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); border-radius: 9999px; padding: 0.8rem 2rem; transition: 0.3s; color: white; font-weight: bold; text-transform: uppercase; }
+        .btn:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 0 20px var(--accent-glow); }
+        .text-gradient { font-family: 'Playfair Display', serif; background: linear-gradient(90deg, #ffc2e2, #ffffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        #no-btn { position: relative; transition: 0.2s ease; }
+    </style>
+</head>
+<body>
+    <audio id="bg-music" loop><source src="song.mp3" type="audio/mpeg"></audio>
+    <div id="aurora-background"></div>
+    <div id="canvas-container" style="position: fixed; top: 0; left: 0; z-index: 1;"></div>
+
+    <main id="app">
+        <div id="step0" class="step active">
+            <h2 class="text-2xl font-bold mb-4">Enter Your Name</h2>
+            <input type="text" id="nameInput" >
+            <button onclick="checkName()" class="btn">Open Gift 🎁</button>
+            <p id="errorMsg" class="text-red-400 mt-2 text-sm hidden">Thappa type pandringale! (Hint: Naveen)</p>
+        </div>
+
+        <div id="step1" class="step">
+            <h1 class="text-4xl font-bold text-gradient mb-4">Happy Birthday,Bhaii❤️</h1>
+            <p class="mb-8 text-gray-300">"Happy Birthday, Darluuu! 🎉 Wishing you a day filled with love, laughter, and adventure! May your year ahead be as epic as you are 😄. Cheers to you, dont feel about fr silly things..Njoyy ur day god bless uh"</p>
+            <button onclick="nextStep(2)" class="btn">Thank You</button>
+        </div>
+
+        <div id="step2" class="step">
+            <div class="mb-4 border-4 border-white shadow-2xl inline-block">
+                <img src="photo.jpeg" class="max-h-80 w-auto object-contain" alt="Naveen Photo">
+            </div>
+            <p class="mt-4 text-lg italic text-pink-200">"indha pic ah paakum pothu epdi siripu varutho adhey maari epaiyum sirichutu iru"</p>
+            <button onclick="nextStep(3)" class="btn mt-6">Next</button>
+        </div>
+
+        <div id="step3" class="step">
+            <img src="cake.gif" class="mx-auto w-64 mb-4 rounded-lg">
+            <h2 class="text-2xl font-bold text-gradient mb-4">Enna paakura candel erithu paaru oothu</h2>
+            <button onclick="nextStep(4)" class="btn">Blow Candle 🌬️</button>
+        </div>
+
+        <div id="step4" class="step">
+            <img src="cake-cut-1.gif" class="mx-auto w-64 mb-4 rounded-lg">
+            <p class="text-lg text-gray-200 mb-6"> Seri Seri Cake lam Cut Panniyatchu Once Again wish You Happy b'day soda pottiee 😏🎀😂"</p>
+            <button onclick="nextStep(5)" class="btn">Proceed</button>
+        </div>
+
+        <div id="step5" class="step">
+            <h2 class="text-3xl font-bold text-gradient mb-8">ipo aatchum uncle nu othukuriya??</h2>
+            <div class="flex justify-center gap-6">
+                <button onclick="nextStep(6)" class="btn px-8">Yes</button>
+                <button id="no-btn" onmouseover="moveNoButton()" class="btn bg-gray-600">No</button>
+            </div>
+        </div>
+
+        <div id="step6" class="step">
+            <h2 class="text-3xl font-bold text-gradient mb-8">ama treat enga??</h2>
+            <div class="flex justify-center gap-7">
+                <button onclick="nextStep(7)" class="btn px-8">Next</button>
+            </div>
+        </div>
+
+        <div id="step7" class="step">
+            <h2 class="text-3xl font-bold text-gradient mb-8">Sorry its my average programing wish next time nalla pandren😂👍🏻!</h2>
+            <div class="flex justify-center gap-8">
+                 <button id="celebrate-btn" class="btn">Celebrate! 🎉</button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        let currentStep = 0;
+
+        function checkName() {
+            const input = document.getElementById('nameInput').value.toLowerCase().trim();
+            if (input === 'naveen') {
+                document.getElementById('bg-music').play();
+                nextStep(1);
+            } else {
+                document.getElementById('errorMsg').classList.remove('hidden');
+            }
+        }
+
+        function nextStep(step) {
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            document.getElementById(`step${step}`).classList.add('active');
+            currentStep = step;
+        }
+
+        function moveNoButton() {
+            const btn = document.getElementById('no-btn');
+            const x = Math.random() * (window.innerWidth - 150);
+            const y = Math.random() * (window.innerHeight - 100);
+            btn.style.position = 'fixed';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+
+        document.getElementById('celebrate-btn').addEventListener('click', () => {
+            const end = Date.now() + 5000;
+            const colors = ['#ff3879', '#ffffff', '#ff74a4'];
+            (function frame() {
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: colors });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: colors });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        });
+
+        // Fixed Three.js Hearts
+        let scene, camera, renderer, hearts = [];
+        function initThree() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            camera.position.z = 30;
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            const heartShape = new THREE.Shape();
+            heartShape.moveTo(0, 0);
+            heartShape.bezierCurveTo(0, -3, -5, -15, -20, -15);
+            heartShape.bezierCurveTo(-35, -15, -35, 7, -35, 7);
+            heartShape.bezierCurveTo(-35, 16, -25, 25, 0, 40);
+            heartShape.bezierCurveTo(25, 25, 35, 16, 35, 7);
+            heartShape.bezierCurveTo(35, 7, 35, -15, 20, -15);
+            heartShape.bezierCurveTo(5, -15, 0, -3, 0, 0);
+
+            const geom = new THREE.ExtrudeGeometry(heartShape, { depth: 2, bevelEnabled: true, bevelThickness: 1 });
+            // Correct rotation so hearts face up
+            geom.rotateZ(Math.PI); 
+
+            for(let i=0; i<25; i++) {
+                const mat = new THREE.MeshPhongMaterial({ color: 0xff3879, shininess: 100 });
+                const heart = new THREE.Mesh(geom, mat);
+                heart.scale.set(0.12, 0.12, 0.12);
+                heart.position.set(Math.random()*80-40, Math.random()*60-30, Math.random()*20-10);
+                heart.rotation.y = Math.random() * Math.PI;
+                hearts.push(heart);
+                scene.add(heart);
+            }
+            const light = new THREE.DirectionalLight(0xffffff, 1.5); light.position.set(0,0,10); scene.add(light);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            hearts.forEach(h => { 
+                h.rotation.y += 0.01; 
+                h.position.y += Math.sin(Date.now()*0.001 + h.position.x)*0.03; 
+            });
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        initThree();
+    </script>
+</body>
+</html>
